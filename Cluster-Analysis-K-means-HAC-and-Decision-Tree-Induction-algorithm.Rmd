@@ -1,0 +1,187 @@
+---
+title: 'Cluster Analysis and Decision Tree Induction'
+author: 'Adesh Gadge'
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+
+
+***
+#**Section 1: Data preparation **
+***
+***
+##**Dependencies**
+***
+####loading required libraries
+```{r,message=F, warning=F}
+library(caret)
+library(rpart)
+library(rattle)
+library(factoextra)
+library(dendextend)
+```
+***
+##**Data**
+***
+####Having look at the data
+```{r}
+df <- read.csv('Disputed_Essay_data.csv')
+sum(!complete.cases(df))
+str(df)
+```
+***
+##**Data Exploration and Preprocessing**
+***
+###Decision Tree: 
+#####Training data will be data for essays with authors hamilton and madison as we want to find out who was the person who wrote those disputed essays and testing data will be disputed author essays 
+##### Also removing filenames from the data
+```{r,message= F}
+training_data = df[df$author== 'Hamilton'|df$author=='Madison',]
+testing_data = df[df$author=='dispt',]
+training_data <- training_data[,-2]
+testing_data <- testing_data[,c(-1,-2)]
+charArr<-as.character(training_data$author)
+training_data$author <- as.factor(charArr)
+
+
+```
+###K-means: 
+#####Input data will be data for essays with authors hamilton, madison and disputed. 
+##### Also removing filenames from the data and also authornames can't be an input to the kmeans algorithm
+```{r,message=F}
+df <- read.csv("Disputed_Essay_data.csv")
+df <- df[df$author!="HM",]
+df <- df[df$author!="Jay",]
+df1<-df
+authors<-df$author
+charArr<-as.character(authors)
+authors <- as.factor(charArr)
+k_authorlist <- as.factor(charArr)
+df <- df[,-1:-2]
+df <- scale(df, center = T, scale = T)
+
+```
+
+###HAC:
+#####Input will be same as k-means.
+***
+#**Section 2: Build and tune cluster analysis and decision tree models **
+***
+###Decision Tree:
+####Default setting:
+```{r}
+dt_model <- train(author~.,data=training_data, metric= 'Accuracy',method= 'rpart')
+print(dt_model$finalModel)
+```
+####Visualization:
+```{r}
+fancyRpartPlot(dt_model$finalModel)
+```
+
+####Model Tuning:
+```{r}
+dt_model2 <- train(author~.,data=training_data, metric= 'ROC',method='rpart',trControl=trainControl(method="cv",number=3,classProbs=T,summaryFunction = twoClassSummary),
+                   tuneGrid= expand.grid(cp=seq(0,0.01,0.001)))
+print(dt_model2)
+```
+####Visualization:
+```{r}
+fancyRpartPlot(dt_model2$finalModel)
+```
+
+#### Observation:
+#####Even after fine tuning the model learned was the default one. The model is simple and works accurately. Only one factor(upon) is enough for the finding out who wrote essays based on the available data
+
+###K-means:
+####Visualization for default setting
+```{r}
+wss <- function(k){
+  return(kmeans(df, k, nstart = 25)$tot.withinss)
+}
+k_values <- 1:5
+
+wss_values <- purrr::map_dbl(k_values, wss)
+
+plot(x = k_values, y = wss_values, 
+     type = "b", frame = F,
+     xlab = "Number of clusters K",
+     ylab = "Total within-clusters sum of square")
+
+km_output <- kmeans(df, centers = 2, nstart = 25, iter.max = 100, algorithm = "Hartigan-Wong")
+fviz_cluster(km_output, data = df)
+```
+
+###HAC:
+
+```{r,fig.width=14}
+HACdist = dist(as.matrix(df))
+HAC <- as.dendrogram(hclust(HACdist, method = "ward.D2"))
+labels(HAC) <- df1$author[order.dendrogram(HAC)]
+
+```
+
+***
+#**Section 3: Prediction and interpretation **
+***
+
+###Prediction:
+#### Decision Tree Default:
+```{r}
+dt_predict <- predict(dt_model, newdata = testing_data , type = "prob")
+dt_predict
+```
+
+#### Decision Tree Tuned:
+```{r}
+dt_predict <- predict(dt_model2, newdata = testing_data , type = "prob")
+dt_predict
+```
+
+#### K-means output:
+```{r}
+table(authors,km_output$cluster)
+```
+
+#### HAC output:
+```{r,fig.width=14}
+plot(HAC, main="Dendogram using HAC algorithm",xlab = "Authors", ylab = "Euclidean Dist",cex=0.05)
+```
+
+###Interpretation:
+### It was **MADISON !!**
+#####It can be seen from the Decision tree models that all the disputed essay work was predicted to be done by **Madison**. And it can be seen in the table that k-means estimated the same and HAC produced the same result. Hence all algorithms concluded the same result. 
+
+###Where are the papers with joint authorships located? 
+#####Lets use k-means to answer this question
+```{r}
+df2 <- read.csv("Disputed_Essay_data.csv")
+df2 <- df2[df2$author!="Jay",]
+df3<-df2
+authors2<-df2$author
+charArr<-as.character(authors2)
+authors2 <- as.factor(charArr)
+df2 <- df2[,-1:-2]
+df2 <- scale(df2, center = T, scale = T)
+```
+#####Locating HM data points in the dataframe
+
+```{r}
+row.names(df3[df3$author=="HM",])
+```
+
+##### Now lets locate where HM lies in the 2 clusters.
+```{r}
+km_output2 <- kmeans(df2, centers = 2, nstart = 25, iter.max = 100, algorithm = "Hartigan-Wong")
+fviz_cluster(km_output2, data = df2)
+```
+
+```{r}
+km_output3 <- kmeans(df2, centers = 3, nstart = 25, iter.max = 100, algorithm = "Hartigan-Wong")
+fviz_cluster(km_output3, data = df2)
+```
+
+##### As it can be seen in the plot points 63,64,65 are located to the extreme left side of the Madison(majority) cluster. Hence it can be inferenced that joint essays could have more Madison influence. Or could form their own cluster. 
+
