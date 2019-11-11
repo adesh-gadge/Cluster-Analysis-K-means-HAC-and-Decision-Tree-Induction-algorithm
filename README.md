@@ -33,10 +33,12 @@ tree induction algorithm.
 ## Results:
 ### Decision tree:
 
-![img](images/decision tree.jpg)
+![DecisionTree](https://github.com/adesh-gadge/Cluster-Analysis-K-means-HAC-and-Decision-Tree-Induction-algorithm/blob/master/images/decision%20tree.jpg)
+![DecisionTreeResult](https://github.com/adesh-gadge/Cluster-Analysis-K-means-HAC-and-Decision-Tree-Induction-algorithm/blob/master/images/dtreeresult.jpg)
 
 ### Kmeans:
-
+![Kmeans](https://github.com/adesh-gadge/Cluster-Analysis-K-means-HAC-and-Decision-Tree-Induction-algorithm/blob/master/images/kmeans1.jpg)
+![Kmeans2](https://github.com/adesh-gadge/Cluster-Analysis-K-means-HAC-and-Decision-Tree-Induction-algorithm/blob/master/images/kmenas2.jpg)
 #### It can be seen from the Decision tree models that all the disputed essay work was predicted to be done by Madison. And it can be seen in the table that k-means estimated the same and HAC produced the same result. Hence all algorithms concluded the same result.
 
 
