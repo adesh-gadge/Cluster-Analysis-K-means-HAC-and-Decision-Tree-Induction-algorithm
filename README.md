@@ -1,4 +1,5 @@
 # Cluster-Analysis-K-means-HAC-and-Decision-Tree-Induction-algorithm
+## Problem:
 Solving a mystery in history using Machine Learning with R: who wrote the disputed essays in the Federalist Papers, Hamilton or Madison?
 
 Cluster Analysis and Decision Tree algorithm to solve a mystery in history: who wrote the disputed essays, Hamilton or Madison?
@@ -28,3 +29,6 @@ forensics (e.g. deception detection), and information organization.
 
 This is an attempt to solving this mystery using clustering algorithms (k-Means and HAC) and decision
 tree induction algorithm.
+
+## Results:
+### Decision tree:
