@@ -32,7 +32,8 @@ tree induction algorithm.
 
 ## Results:
 ### Decision tree:
-<img src="https://drive.google.com/open?id=19JKOhRGO92GGTNDfjU3qdGyhQMUieKTc"/>
+
+![img](images/decision tree.jpg)
 
 ### Kmeans:
 
