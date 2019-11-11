@@ -32,11 +32,9 @@ tree induction algorithm.
 
 ## Results:
 ### Decision tree:
-![Decision tree](https://drive.google.com/open?id=1I7bMYRdqdDHOWcTk2KvzzsUbdL0TTQhT)
-![Decision tree] (https://drive.google.com/open?id=1GBKNduYl3869bK1d0QH6C0-_-xTm58h0)
+<img src="https://drive.google.com/open?id=19JKOhRGO92GGTNDfjU3qdGyhQMUieKTc"/>
+
 ### Kmeans:
-![K-Means Plot] (https://drive.google.com/open?id=1Xflt4th_-mH3XX1so_UwL4y_Ce_aXvpL)
-![K-Means Results] (https://drive.google.com/open?id=1vcD5CK33VhQkWt-2dyIdBdOcwqkk5puc)
 
 #### It can be seen from the Decision tree models that all the disputed essay work was predicted to be done by Madison. And it can be seen in the table that k-means estimated the same and HAC produced the same result. Hence all algorithms concluded the same result.
 
